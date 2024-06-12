@@ -9,6 +9,7 @@ export const PRODUCT_PAGINATION_CONFIG: PaginateConfig<Product> = {
         'id',
         'name',
         'summary',
+        'price',
         'createdAt',
         'updatedAt',
         'cover.url',
