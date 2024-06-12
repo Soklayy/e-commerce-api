@@ -39,7 +39,7 @@ export class ProductService {
 
   async findAll(query: PaginateQuery): Promise<Paginated<Product>> {
     selectPagination(query, PRODUCT_PAGINATION_CONFIG);
-    return paginate(query, this.productRepo, PRODUCT_PAGINATION_CONFIG);
+    return await paginate(query, this.productRepo, PRODUCT_PAGINATION_CONFIG);
   }
 
   async findOne(id: string) {

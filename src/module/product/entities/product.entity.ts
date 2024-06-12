@@ -22,6 +22,9 @@ export class Product extends AbstractEntity {
   @Column({ type: 'text', default: null })
   summary: string;
 
+  @Column({ type: 'float', default: 0 })
+  price: number;
+
   @OneToOne(() => File, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'cover' })
   cover: File;
