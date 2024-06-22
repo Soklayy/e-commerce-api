@@ -1,5 +1,6 @@
 import { IsNotEmpty, IsOptional } from 'class-validator';
-import { IsExists } from 'src/commons/validations/is-exists.validattion';
+import { IsExists } from 'src/commons/validations';
+import { Brand } from 'src/module/brand/entities/brand.entity';
 import { Category } from 'src/module/category/entities/category.entity';
 
 export class CreateProductDto {
@@ -12,9 +13,19 @@ export class CreateProductDto {
   @IsOptional()
   summary: string;
 
+  @IsOptional()
+  price: number;
+
+  @IsOptional()
   @IsNotEmpty()
-  @IsExists([Category, (argu) => Object({ id: argu.value })], {
+  @IsExists([Category, ({ value }) => Object({ id: value })], {
     message: 'Category is not exist',
   })
-  category: Category;
+  categoryId: string;
+
+  @IsNotEmpty()
+  @IsExists([Brand, ({ value }) => Object({ id: value })], {
+    message: 'Category is not exist',
+  })
+  brandId: string;
 }

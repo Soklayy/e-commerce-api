@@ -5,8 +5,10 @@ import { MODULE_OPTIONS_TOKEN, MailerModuleOption } from './mailer.interface';
 
 @Injectable()
 export class MailerService {
-  private transporter: Transporter;
-  constructor(@Inject(MODULE_OPTIONS_TOKEN) private readonly option: MailerModuleOption) {
+  private readonly transporter: Transporter;
+  constructor(
+    @Inject(MODULE_OPTIONS_TOKEN) private readonly option: MailerModuleOption,
+  ) {
     this.transporter = createTransport(option.transport, option.defaults);
   }
 

@@ -15,7 +15,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/commons/decorators/roles.decorator';
-import { Role } from 'src/commons/enums/role.enum';
+import { Role } from 'src/commons/enums';
 import { Public } from 'src/commons/decorators/public.decorator';
 
 @Roles(Role.ADMIN)

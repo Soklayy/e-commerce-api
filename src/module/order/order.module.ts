@@ -3,10 +3,9 @@ import { OrderService } from './order.service';
 import { OrderController } from './order.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Order } from './entities/order.entity';
-import { TelegramBotModule } from '../telegram-bot';
-
+import { Carts } from '../cart/entities/carts.entity';
 @Module({
-  imports: [TypeOrmModule.forFeature([Order])],
+  imports: [TypeOrmModule.forFeature([Order, Carts])],
   controllers: [OrderController],
   providers: [OrderService],
 })

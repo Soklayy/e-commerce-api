@@ -10,15 +10,13 @@ import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { FileService } from '../file/file.service';
 import { File } from '../file/entities/file.entity';
-import { TelegramBotService } from '../telegram-bot';
-
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly fileService: FileService,
-    private readonly bot:TelegramBotService,
+    // private readonly bot:TelegramBotService,
   ) {}
 
   async create(createUserDto: CreateUserDto, file?: Express.Multer.File) {
@@ -100,7 +98,10 @@ export class UserService {
       delete user?.password;
       delete user?.refreshToken;
 
-      const result = Object.assign(user, newuser);
+      const result = Object.assign(user, {
+        ...newuser,
+        profileImage: profileImage.url || user?.profileImage?.url,
+      });
       return result;
     } catch (error) {
       if (profileImage) {

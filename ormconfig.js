@@ -21,6 +21,5 @@ module.exports = new DataSource({
   database: DB_DATABASE,
   migrations: [__dirname + '/src/migrations/*{.ts,.js}'],
   entities: [__dirname + '/src/**/*.entity.{ts,js}'],
-  subscribers: [__dirname + '/src/**/*.subscriber.{ts,js}'],
   synchronize: DB_SYNC,
 });

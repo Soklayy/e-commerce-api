@@ -8,9 +8,16 @@ export class Address extends AbstractEntity {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @Column({ nullable: true })
-  location: string;
+  @Column({ nullable: true, name: 'address_line' })
+  addressLine: string;
 
   @Column({ nullable: true })
   phone: string;
+
+  @Column({ nullable: true })
+  latitude: string;
+
+  @Column({ nullable: true })
+  longitude:string;
+
 }

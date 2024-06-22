@@ -1,61 +1,89 @@
-import { Module } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
+import { ClassSerializerInterceptor, Module } from '@nestjs/common';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { typeOrmConfig } from './configs/typeorm.config';
-import { UniqueValidator } from './commons/validations/is-unigue.validation';
-import { FirebaseModule } from './module/firebase/firebase.module';
-import { JwtAuthGuard } from './commons/guard/jwt-auth.guard';
-import { ExistValidator } from './commons/validations/is-exists.validattion';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { TelegrafModule } from 'nestjs-telegraf';
+import { FirebaseModule } from './module/firebase';
 import { AuthModule } from './module/auth/auth.module';
 import { CategoryModule } from './module/category/category.module';
 import { ProductModule } from './module/product/product.module';
-import { CartModule } from './module/cart/cart.module';
 import { OrderModule } from './module/order/order.module';
-import { PaymentModule } from './module/payment/payment.module';
-import { ThrottlerModule } from '@nestjs/throttler';
-import { ThrottlerBehindProxyGuard } from './commons/guard/throttler-behind-proxy.guard';
-import { ThrottlerConfigService } from './configs/throttler.config';
 import { UserOwnManagementModule } from './module/user-own-management/user-own-management.module';
-import { TelegramBotModule } from './module/telegram-bot';
-import { mailerConfig } from './configs/mailler.config';
-import { RolesGuard } from './commons/guard/roles.guard';
 import { UserModule } from './module/user/user.module';
 import { MailerModule } from './module/mailer';
+import { UniqueValidator, ExistValidator } from './commons/validations';
+import {
+  ThrottlerConfigService,
+  firebaseConfig,
+  mailerConfig,
+  typeOrmConfig,
+} from './configs';
+import {
+  JwtAuthGuard,
+  RolesGuard,
+  ThrottlerBehindProxyGuard,
+} from './commons/guard';
+import { BrandModule } from './module/brand/brand.module';
+import { AbaPaywayModule } from './module/aba-payway';
+import { ProductOptionModule } from './module/product-option/product-option.module';
+import { BotModule } from './module/bot/bot.module';
+import { session } from 'telegraf';
+import { CartsModule } from './module/cart/carts.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
+      inject: [ConfigService],
       useFactory: typeOrmConfig,
-      inject: [ConfigService]
     }),
     ThrottlerModule.forRootAsync({
       imports: [ConfigModule],
       useClass: ThrottlerConfigService,
     }),
-    TelegramBotModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: (config: ConfigService) => ({ token: config.get('BOT_TOKEN') }),
-      inject: [ConfigService]
-    }),
     MailerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: mailerConfig
+      useFactory: mailerConfig,
+    }),
+    TelegrafModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        token: configService.get<string>('BOT_TOKEN'),
+        include: [BotModule],
+        middlewares: [session()]
+      }),
+    }),
+    FirebaseModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: firebaseConfig,
+    }),
+    AbaPaywayModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (config: ConfigService) => ({
+        baseUrl: config.get<string>('PAYWAY_BASE_URL'),
+        merchantId: config.get<string>('PAYWAY_MERCHANT_ID'),
+        apiKey: config.get<string>('PAYWAY_PUBLIC_KEY'),
+        returnLink: config.get<string>('PAYWAY_RETURN_LINK')
+      }),
     }),
     EventEmitterModule.forRoot(),
     UserModule,
-    FirebaseModule,
     AuthModule,
     CategoryModule,
     ProductModule,
-    CartModule,
     OrderModule,
-    PaymentModule,
     UserOwnManagementModule,
+    BrandModule,
+    ProductOptionModule,
+    BotModule,
+    CartsModule,
   ],
   providers: [
     UniqueValidator,
@@ -71,6 +99,10 @@ import { MailerModule } from './module/mailer';
     {
       provide: APP_GUARD,
       useClass: ThrottlerBehindProxyGuard,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ClassSerializerInterceptor,
     },
   ],
 })

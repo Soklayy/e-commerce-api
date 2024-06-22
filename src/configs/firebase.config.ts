@@ -1,6 +1,6 @@
 import { ConfigService } from '@nestjs/config';
 
-export const firebaseConfig = (configService: ConfigService) => {
+export const firebaseConfig = async (configService: ConfigService) => {
   return {
     apiKey: configService.get<string>('API_KEY'),
     authDomain: configService.get<string>('AUTH_DOMAIN'),

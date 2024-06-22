@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import {
-  ThrottlerException,
   ThrottlerModuleOptions,
   ThrottlerOptionsFactory,
 } from '@nestjs/throttler';
 import { ThrottlerStorageMongoService } from 'nestjs-throttler-storage-mongo';
+// import { ThrottlerStorageMongoService } from 'nestjs-throttler-storage-mongo';
 @Injectable()
 export class ThrottlerConfigService implements ThrottlerOptionsFactory {
   constructor(private readonly configService: ConfigService) {}
@@ -52,7 +52,7 @@ export class ThrottlerConfigService implements ThrottlerOptionsFactory {
       //   },
       // },
 
-      // storage: new ThrottlerStorageMongoService(this.configService.get<string>('MONGODB_URL'))
+      // storage: new ThrottlerStorageMongoService(this.configService.get<string>('MONGODB_URL')),
     };
   }
 }

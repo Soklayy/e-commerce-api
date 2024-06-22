@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
-import { IsSameAs } from 'src/commons/validations/is-same-as.validation';
+import { IsSameAs } from 'src/commons/validations';
 
 export class ResetPasswordDto {
   @ApiProperty({

@@ -39,15 +39,14 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         dateOfbirth: true,
         role: true,
         profileImage: {
-          id:true,
-          url: true
-        }
+          id: true,
+          url: true,
+        },
       },
       loadEagerRelations: false,
       relations: {
         profileImage: true,
-      }
-
+      },
     });
 
     if (!user) {

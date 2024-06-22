@@ -1,13 +1,9 @@
-import { Exclude } from 'class-transformer';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { AbstractEntity } from 'src/commons/entities/abstract.entity';
+import { Column, Entity } from 'typeorm';
 
 @Entity('files')
-export class File {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
+export class File extends AbstractEntity {
   @Column()
-  @Exclude()
   path: string;
 
   @Column()

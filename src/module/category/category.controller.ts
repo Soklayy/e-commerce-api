@@ -6,12 +6,19 @@ import {
   Patch,
   Param,
   Delete,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/commons/decorators/public.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
+import {
+  CreateCategorySchema,
+  UpdateCategorySchema,
+} from 'src/commons/schema/category.schema';
 
 @Public()
 @ApiTags('Categories')
@@ -20,8 +27,16 @@ export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Post()
-  create(@Body() createCategoryDto: CreateCategoryDto) {
-    return this.categoryService.create(createCategoryDto);
+  @ApiConsumes('multipart/form-data', 'application/json')
+  @ApiBody({
+    type: CreateCategorySchema,
+  })
+  @UseInterceptors(FileInterceptor('cover'))
+  create(
+    @Body() createCategoryDto: CreateCategoryDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.categoryService.create(createCategoryDto, file);
   }
 
   @Get()
@@ -35,11 +50,17 @@ export class CategoryController {
   }
 
   @Patch(':id')
+  @ApiConsumes('multipart/form-data', 'application/json')
+  @ApiBody({
+    type: UpdateCategorySchema,
+  })
+  @UseInterceptors(FileInterceptor('cover'))
   update(
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
+    @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.categoryService.update(id, updateCategoryDto);
+    return this.categoryService.update(id, updateCategoryDto, file);
   }
 
   @Delete(':id')

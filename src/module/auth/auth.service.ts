@@ -27,10 +27,11 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly eventEmitter: EventEmitter2,
-  ) { }
+  ) {}
 
   async registerUser(dto: RegisterDto) {
-    const user = await this.userRepo.save(this.userRepo.create(dto)); 'INSERT TO USERS '
+    const user = await this.userRepo.save(this.userRepo.create(dto));
+    ('INSERT TO USERS ');
     const tokens = await this.getTokens(user.id);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
     this.eventEmitter.emit('user.registered', {
@@ -113,13 +114,13 @@ export class AuthService {
     try {
       const user = await this.userRepo.findOneBy({ id: userId });
       if (!user) throw new ForbiddenException('Access Denied');
-      const refreshTokenMatches = compareSync(refreshToken, user?.refreshToken)
+      const refreshTokenMatches = compareSync(refreshToken, user?.refreshToken);
       if (!refreshTokenMatches) throw new ForbiddenException('Access Denied');
       const tokens = await this.getTokens(user.id);
       await this.updateRefreshToken(user.id, tokens.refreshToken);
       return tokens;
     } catch (error) {
-      console.log('Refresh token error: ',error.message)
+      console.log('Refresh token error: ', error.message);
       throw new ForbiddenException('Access Denied');
     }
   }

@@ -29,7 +29,7 @@ import { Request, Response } from 'express';
 @Controller('auth')
 @ApiTags('Authentication')
 export class AuthController {
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService) {}
 
   @Public()
   @Post('/register')
@@ -42,7 +42,10 @@ export class AuthController {
     @Body() dto: RegisterDto,
   ): Promise<{ accessToken: string; refreshToken: string }> {
     const token = await this.authService.registerUser(dto);
-    res.cookie('auth._refresh_token.local', token?.refreshToken, { signed: true });
+    res.cookie('auth._refresh_token.local', token?.refreshToken, {
+      signed: true,
+      maxAge: 15 * 24 * 60 * 60 * 1000,
+    }); //15 day
     return token;
   }
 
@@ -54,10 +57,13 @@ export class AuthController {
   })
   async login(
     @Res({ passthrough: true }) res: Response,
-    @Body() dto: LoginDto
+    @Body() dto: LoginDto,
   ) {
     const token = await this.authService.login(dto);
-    res.cookie('auth._refresh_token.local', token?.refreshToken, { signed: true });
+    res.cookie('auth._refresh_token.local', token?.refreshToken, {
+      signed: true,
+      maxAge: 15 * 24 * 60 * 60 * 1000,
+    }); //15 day
     return token;
   }
 

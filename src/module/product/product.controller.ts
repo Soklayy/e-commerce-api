@@ -8,20 +8,23 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
+  UploadedFiles,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/commons/decorators/public.decorator';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import {
   CreateProductSchema,
   UpdateProductSchema,
 } from 'src/commons/schema/product.schema';
 import { Roles } from 'src/commons/decorators/roles.decorator';
 import { Role } from 'src/commons/enums/role.enum';
-import { ApiOkPaginatedResponse, Paginate, PaginateQuery, PaginatedSwaggerDocs } from 'nestjs-paginate';
+import { Paginate, PaginateQuery, PaginatedSwaggerDocs } from 'nestjs-paginate';
 import { Product } from './entities/product.entity';
 import { PRODUCT_PAGINATION_CONFIG } from './dto/pagination.config';
 
@@ -38,10 +41,10 @@ export class ProductController {
   @ApiBody({
     type: CreateProductSchema,
   })
-  @UseInterceptors(FileInterceptor('cover'))
+  @UseInterceptors(FilesInterceptor('images'))
   create(
     @Body() createProductDto: CreateProductDto,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFiles() file: Express.Multer.File[],
   ) {
     return this.productService.create(createProductDto, file);
   }
@@ -65,18 +68,50 @@ export class ProductController {
   @ApiBody({
     type: UpdateProductSchema,
   })
-  @UseInterceptors(FileInterceptor('cover'))
   update(
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,
-    @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.productService.update(id, updateProductDto, file);
+    return this.productService.update(id, updateProductDto);
   }
 
   @Roles(Role.ADMIN)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.productService.remove(id);
+  }
+
+
+  // image route
+
+  @Post(':id/image')
+  @HttpCode(HttpStatus.OK)
+  @UseInterceptors(FilesInterceptor('images'))
+  @ApiConsumes('multipart/form-data')
+  addImages(
+    @Param('id') id: string,
+    @UploadedFiles() file: Express.Multer.File[],
+  ) {
+    return this.productService.addImage(id, file);
+  }
+
+  @Patch(':id/image/:imageId')
+  @HttpCode(HttpStatus.OK)
+  @UseInterceptors(FileInterceptor('images'))
+  @ApiConsumes('multipart/form-data')
+  updateImage(
+    @Param('id') id: string,
+    @Param('imageId') iamgeId: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.productService.updateImage(id, iamgeId, file);
+  }
+
+  @Delete(':id/image/:imageId')
+  removeImage(
+    @Param('id') id: string,
+    @Param('imageId') iamgeId: string,
+  ) {
+    return this.productService.removeImage(id, iamgeId);
   }
 }

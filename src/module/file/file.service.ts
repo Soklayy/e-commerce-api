@@ -1,12 +1,10 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { File } from './entities/file.entity';
 import { Repository } from 'typeorm';
-import { FirebaseService } from '../firebase/firebase.service';
+import { FirebaseService } from '../firebase';
+import { PaginateQuery, paginate } from 'nestjs-paginate';
+import { FILE_PAGINATION_CONFIG } from './file.paginate';
 
 @Injectable()
 export class FileService {
@@ -26,13 +24,16 @@ export class FileService {
       if (fileItem) {
         await this.firebaseService.deleteFile(fileItem.path);
       }
-
-      throw new InternalServerErrorException();
+      throw error;
     }
   }
 
   async findOne(id: string) {
-    return this.fileRepository.findOneBy({ id });
+    return await this.fileRepository.findOneBy({ id });
+  }
+
+  async findAll(query: PaginateQuery) {
+    return await paginate(query, this.fileRepository, FILE_PAGINATION_CONFIG);
   }
 
   async update(id: string, file: Express.Multer.File) {
@@ -47,6 +48,8 @@ export class FileService {
     if (!file) throw new NotFoundException('File not found');
     await this.firebaseService.deleteFile(file.path);
     await this.fileRepository.remove(file);
-    return true;
+    return {
+      message: 'File deleted successfully',
+    };
   }
 }

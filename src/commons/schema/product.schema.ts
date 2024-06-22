@@ -1,5 +1,4 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { Category } from 'src/module/category/entities/category.entity';
 
 export class CreateProductSchema {
   @ApiProperty({ required: true })
@@ -16,10 +15,18 @@ export class CreateProductSchema {
     example: '5be37837-5400-422f-89f6-bf42097ea626',
     type: 'string',
   })
-  category: Category;
+  categoryId: string;
 
-  @ApiProperty({ required: false, type: 'string', format: 'binary' })
-  cover: string;
+  @ApiProperty({
+    required: true,
+    example: '5be37837-5400-422f-89f6-bf42097ea626',
+    type: 'string',
+  })
+  brandId: string;
+
+  @ApiProperty({ required: false, type: 'string', format: 'binary', isArray: true })
+  images: string[];
 }
 
-export class UpdateProductSchema extends PartialType(CreateProductSchema) {}
+export class UpdateProductSchema extends PartialType(CreateProductSchema) { }
+

@@ -2,7 +2,9 @@ import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
 import { join } from 'path';
 
-export async function typeOrmConfig(configService: ConfigService): Promise<TypeOrmModuleAsyncOptions> {
+export async function typeOrmConfig(
+  configService: ConfigService,
+): Promise<TypeOrmModuleAsyncOptions> {
   const APP_ENV = configService.get<string>('APP_ENV');
   if (APP_ENV === 'dev') {
     return {

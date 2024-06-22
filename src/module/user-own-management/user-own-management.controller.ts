@@ -10,7 +10,7 @@ import { UserOwnManagementService } from './user-own-management.service';
 import { UpdateUserOwnManagementDto } from './dto/update-user-own-management.dto';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/commons/decorators/roles.decorator';
-import { Role } from 'src/commons/enums/role.enum';
+import { Role } from 'src/commons/enums';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('User own management')

@@ -1,46 +1,40 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Post, Body, Req, Res, Get } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/commons/decorators/public.decorator';
+import { Request } from 'express';
+import { CheckTransaction, HookDto } from './dto/check-transaction.dto';
 
-@Public()
 @ApiTags('Orders')
-@Controller('order')
+@Controller('check-out')
+@ApiBearerAuth()
 export class OrderController {
-  constructor(private readonly orderService: OrderService) {}
+  constructor(
+    private readonly orderService: OrderService,
+  ) { }
 
   @Post()
-  create(@Body() createOrderDto: CreateOrderDto) {
-    return this.orderService.create(createOrderDto);
+  async create(@Req() req: Request, @Body() paymentMethod: CreateOrderDto) {
+    const url = await this.orderService.create(req.user?.id, paymentMethod.paymentMethod);
+    return url
   }
 
+  @Public()
   @Get()
-  findAll() {
-    return this.orderService.findAll();
+  allOrder() {
+    return this.orderService.findAll()
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.orderService.findOne(+id);
+  @Public()
+  @Get('/transaction')
+  order(@Req() req: Request) {
+    return this.orderService.findOne(req.user?.id)
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
-    return this.orderService.update(+id, updateOrderDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.orderService.remove(+id);
+  @Public()
+  @Post('/hook')
+  hook(@Body() dto: HookDto) {
+    return this.orderService.hook(dto)
   }
 }

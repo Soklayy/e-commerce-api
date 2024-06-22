@@ -20,4 +20,8 @@ export class UserOwnManagementService {
   ) {
     return this.userService.update(userid, updateUserOwnManagementDto, file);
   }
+
+  adress(){
+    
+  }
 }

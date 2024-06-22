@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
-import { IsSameAs } from 'src/commons/validations/is-same-as.validation';
-import { IsUnique } from 'src/commons/validations/is-unigue.validation';
+import { IsUnique, IsSameAs } from 'src/commons/validations';
 import { User } from 'src/module/user/entities/user.entity';
 
 export class RegisterDto {

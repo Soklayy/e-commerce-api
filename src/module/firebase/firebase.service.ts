@@ -1,26 +1,39 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import {
   FirebaseStorage,
+  ListResult,
   deleteObject,
   getDownloadURL,
   getStorage,
+  list,
+  listAll,
   ref,
   uploadBytesResumable,
 } from 'firebase/storage';
 import { FirebaseApp, initializeApp } from 'firebase/app';
 import { randomUUID } from 'crypto';
 import * as path from 'path';
-import { ConfigService } from '@nestjs/config';
-import { firebaseConfig } from '../../configs/firebase.config';
+import {
+  FirebaseModuleOption,
+  MODULE_OPTIONS_TOKEN,
+} from './firebase.interface';
 
 @Injectable()
 export class FirebaseService {
-  private firebaseApp: FirebaseApp;
-  private fibaseStorage: FirebaseStorage;
+  private readonly firebaseApp: FirebaseApp;
+  private readonly fibaseStorage: FirebaseStorage;
 
-  constructor(private readonly configServive: ConfigService) {
-    this.firebaseApp = initializeApp(firebaseConfig(this.configServive));
+  constructor(
+    @Inject(MODULE_OPTIONS_TOKEN)
+    private readonly options: FirebaseModuleOption,
+  ) {
+    this.firebaseApp = initializeApp(options);
     this.fibaseStorage = getStorage(this.firebaseApp);
+  }
+
+  async getList() {
+    const listRef = ref(this.fibaseStorage);
+    return await listAll(listRef);
   }
 
   /**

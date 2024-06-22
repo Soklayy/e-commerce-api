@@ -25,6 +25,8 @@ export default class EmailEvent {
         'JWT_VERIFICATION_TOKEN_EXPIRATION_TIME',
       ),
     });
+
+    // const verifiCode = new Date().getTime().toString(36);
     const url = `${this.configService.get(
       'EMAIL_CONFIRMATION_URL',
     )}?token=${token}`;
