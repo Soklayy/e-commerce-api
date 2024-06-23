@@ -55,7 +55,19 @@ import { CartsModule } from './module/cart/carts.module';
       useFactory: async (configService: ConfigService) => ({
         token: configService.get<string>('BOT_TOKEN'),
         include: [BotModule],
-        middlewares: [session()]
+        middlewares: [session()],
+        launch: {
+          dropPendingUpdates: true,
+          onlyFirstMatch: true,
+        },
+        onError: (err) => {
+          if (err.response?.error_code === 409) {
+            console.error(`Bot instance is already running. Exiting...`);
+            process.exit(1);
+          } else {
+            console.error('Telegram bot error:', err);
+          }
+        },
       }),
     }),
     FirebaseModule.forRootAsync({
