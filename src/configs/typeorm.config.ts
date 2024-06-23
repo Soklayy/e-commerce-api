@@ -36,7 +36,7 @@ export async function typeOrmConfig(
       
       entities: [__dirname + './../**/**.entity{.ts,.js}'],
       migrations: [join(__dirname, '../migrations/**{.ts,.js}')],
-      synchronize: false,
+      synchronize: true,
       migrationsRun: true,
       ssl: true,
       retryAttempts: 20,
