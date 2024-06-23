@@ -19,7 +19,6 @@ import { Role } from 'src/commons/enums';
 import { Public } from 'src/commons/decorators/public.decorator';
 
 @Roles(Role.ADMIN)
-// @Public()
 @ApiBearerAuth()
 @ApiTags('Users')
 @Controller('user')

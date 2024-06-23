@@ -27,11 +27,13 @@ export async function typeOrmConfig(
     return {
       //@ts-ignore
       type: configService.get<string>('DB_TYPE'),
-      host: configService.get<string>('DB_HOST'),
-      port: Number(configService.get('DB_PORT')),
-      username: configService.get<string>('DB_USERNAME'),
-      password: configService.get<string>('DB_PASSWORD'),
-      database: configService.get<string>('DB_DATABASE'),
+      url:configService.get<string>('DB_URI'),
+      // host: configService.get<string>('DB_HOST'),
+      // port: Number(configService.get('DB_PORT')),
+      // username: configService.get<string>('DB_USERNAME'),
+      // password: configService.get<string>('DB_PASSWORD'),
+      // database: configService.get<string>('DB_DATABASE'),
+      
       entities: [__dirname + './../**/**.entity{.ts,.js}'],
       migrations: [join(__dirname, '../migrations/**{.ts,.js}')],
       synchronize: false,
