@@ -142,28 +142,32 @@ export class OrderService {
   }
 
   async hook(dto: HookDto) {
-    const order = await this.orderRepo.findOne({
-      where: {
-        tranId: dto.tran_id
-      },
-      relations: {
-        user: true
+    try {
+      const order = await this.orderRepo.findOne({
+        where: {
+          tranId: dto.tran_id
+        },
+        relations: {
+          user: true
+        }
+      })
+  
+      if (!order) {
+        return;
       }
-    })
-
-    if (!order) {
-      return;
+      this.orderRepo.update({ id: order.id }, { paymentStatus: PaymentStatus.PAID })
+      
+      await this.cartRepo.delete({ user: { id: order.user.id } })
+      
+      await this.cartRepo.save(this.cartRepo.create({ user: { id: order.user.id } }))
+  
+      this.bot.telegram.sendMessage(
+        this.configService.get<string>('PRIVATE_GROUP'),
+        generateMarkdownInvoice(dto.tran_id,order),
+        { parse_mode: 'Markdown' }
+      )
+    } catch (error) {
+      this.logger.error(error);
     }
-    this.orderRepo.update({ id: order.id }, { paymentStatus: PaymentStatus.PAID })
-    
-    await this.cartRepo.delete({ user: { id: order.user.id } })
-    
-    await this.cartRepo.save(this.cartRepo.create({ user: { id: order.user.id } }))
-
-    this.bot.telegram.sendMessage(
-      this.configService.get<string>('PRIVATE_GROUP'),
-      generateMarkdownInvoice(dto.tran_id,order),
-      { parse_mode: 'Markdown' }
-    )
   }
 }
