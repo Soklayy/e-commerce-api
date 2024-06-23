@@ -22,12 +22,6 @@ module.exports = new DataSource({
   username: DB_USERNAME,
   password: DB_PASSWORD,
   database: DB_DATABASE,
-  ssl: true,
-  extra: {
-    ssl: {
-      rejectUnauthorized: false,
-    },
-  },
   migrations: [__dirname + '/src/migrations/*{.ts,.js}'],
   entities: [__dirname + '/src/**/*.entity.{ts,js}'],
   synchronize: DB_SYNC,

@@ -40,10 +40,10 @@ import { CartsModule } from './module/cart/carts.module';
       inject: [ConfigService],
       useFactory: typeOrmConfig,
     }),
-    // ThrottlerModule.forRootAsync({
-    //   imports: [ConfigModule],
-    //   useClass: ThrottlerConfigService,
-    // }),
+    ThrottlerModule.forRootAsync({
+      imports: [ConfigModule],
+      useClass: ThrottlerConfigService,
+    }),
     MailerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
