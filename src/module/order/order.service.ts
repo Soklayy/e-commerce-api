@@ -9,7 +9,7 @@ import { HookDto } from './dto/check-transaction.dto';
 import { InjectBot } from 'nestjs-telegraf';
 import { Telegraf, Context } from 'telegraf';
 import { ConfigService } from '@nestjs/config';
-import { generateMarkdownInvoice } from 'template/invoice';
+import { generateMarkdownInvoice } from 'src/template/invoice';
 
 @Injectable()
 export class OrderService {
