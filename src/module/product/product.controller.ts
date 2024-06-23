@@ -84,10 +84,25 @@ export class ProductController {
 
   // image route
 
+  @ApiConsumes('multipart/form-data', 'application/json')
   @Post(':id/image')
   @HttpCode(HttpStatus.OK)
   @UseInterceptors(FilesInterceptor('images'))
   @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      "type": "object",
+      "properties": {
+        "images": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "binary"
+          }
+        }
+      }
+    }
+  })
   addImages(
     @Param('id') id: string,
     @UploadedFiles() file: Express.Multer.File[],

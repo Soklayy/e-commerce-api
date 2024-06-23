@@ -22,7 +22,12 @@ export class Product extends AbstractEntity {
   @Column({ nullable: true, type: 'text' })
   description: string;
 
-  @Column({ type: 'decimal', default: 0, precision: 10, scale: 2 })
+  @Column({
+    type: 'decimal', default: 0, precision: 10, scale: 2, transformer: {
+      to: (value) => value,
+      from: (value) => Number(value),
+    },
+  })
   price: number;
 
   @Column({
