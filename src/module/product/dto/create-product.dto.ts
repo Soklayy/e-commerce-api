@@ -17,6 +17,9 @@ export class CreateProductDto {
   price: number;
 
   @IsOptional()
+  discount: number;
+
+  @IsOptional()
   @IsNotEmpty()
   @IsExists([Category, ({ value }) => Object({ id: value })], {
     message: 'Category is not exist',
