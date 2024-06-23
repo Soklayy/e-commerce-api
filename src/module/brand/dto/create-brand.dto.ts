@@ -4,7 +4,7 @@ import { Brand } from '../entities/brand.entity';
 
 export class CreateBrandDto {
   @Length(3, 255)
-  @IsUnique([Brand], { message: 'Can not use this name' })
+  // @IsUnique([Brand], { message: 'Can not use this name' })
   name: string;
 
   @IsOptional()

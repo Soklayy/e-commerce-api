@@ -163,7 +163,7 @@ export class OrderService {
   
       this.bot.telegram.sendMessage(
         this.configService.get<string>('PRIVATE_GROUP'),
-        generateMarkdownInvoice(dto.tran_id,order),
+        generateMarkdownInvoice(order),
         { parse_mode: 'Markdown' }
       )
     } catch (error) {

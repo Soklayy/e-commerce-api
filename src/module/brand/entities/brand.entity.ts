@@ -13,7 +13,7 @@ import { Product } from 'src/module/product/entities/product.entity';
 
 @Entity('brands')
 export class Brand extends AbstractEntity {
-  @Column({ unique: true })
+  @Column({ })
   name: string;
 
   @Column({ nullable: true })

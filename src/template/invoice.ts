@@ -1,13 +1,14 @@
 import { Order } from "src/module/order/entities/order.entity";
 
-export function generateMarkdownInvoice(tran_id: string, invoiceData: Order) {
+export function generateMarkdownInvoice(invoiceData: Order) {
 
    const header = `*****🚨Order Alert: Action Required*****
 ***🧾Order Details ***
-- ** Order ID:** ${tran_id}
-- ** Order Date:** ${'`June 20, 2024`'}
-- ** Buyer Name:** ${'`John Doe`'}
+- ** Order ID:** ${invoiceData?.tranId}
+- ** Order Date:** ${invoiceData?.createdAt}
+- ** Buyer Name:** ${invoiceData?.user?.firstname} ${invoiceData?.user?.lastname}
 - ** Shipping Address:** ${`123 Main St, Springfield, IL 62704`}
+- ** phone : ${invoiceData?.user?.address?.phone || '0187737519'}
 
 ***🛒Items Ordered ***
 `
@@ -21,7 +22,7 @@ export function generateMarkdownInvoice(tran_id: string, invoiceData: Order) {
       invoice += `
    1. ** Item:** ${item.product?.name}
    - ** Quantity:** ${item?.quantity}
-   - ** Option:** ${item?.productOption?.name} +$ ${item?.productOption?.priceIncrement}
+   - ** Option:** ${item?.productOption?.name || null} $${item?.productOption?.priceIncrement || 0}
    - ** Price:** $${item?.amount}`
 
    })
