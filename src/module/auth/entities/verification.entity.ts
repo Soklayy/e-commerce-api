@@ -1,7 +1,7 @@
 import { AbstractEntity } from "src/commons/entities/abstract.entity";
 import { Column, Entity } from "typeorm";
 
-Entity('verification')
+@Entity('verification')
 export class Verification extends AbstractEntity {
     @Column()
     code: string;
