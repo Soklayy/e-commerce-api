@@ -10,12 +10,13 @@ import { AuthController } from './auth.controller';
 import { RefreshTokenStrategy } from 'src/commons/strategies/refresh-token.strategy';
 import { ForgotEntity } from './entities/forgot.entity';
 import EmailEvent from './events/email.event';
+import { Verification } from './entities/verifie.entity';
 
 @Module({
   imports: [
     PassportModule,
     UserModule,
-    TypeOrmModule.forFeature([User, ForgotEntity]),
+    TypeOrmModule.forFeature([User, ForgotEntity,Verification]),
     JwtModule.register({}),
   ],
   controllers: [AuthController],
