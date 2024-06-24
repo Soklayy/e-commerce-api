@@ -43,7 +43,7 @@ export default class EmailEvent {
       from: `${this.configService.get('EMAIL_USER')}`,
       to: payload?.email,
       subject: `Hello ${payload?.fullName}`,
-      text: `Code for verifie your email: <h1>${verifiCode}</h1>`,
+      html: `Code for verifie your email: <h1>${verifiCode}</h1>`,
     });
   }
 
