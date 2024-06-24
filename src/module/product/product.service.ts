@@ -64,6 +64,10 @@ export class ProductService {
       where: {
         id,
       },
+      relations:{
+        category:true,
+        brand:true,
+      }
     });
 
     if (!product) throw new NotFoundException('Product not found');
