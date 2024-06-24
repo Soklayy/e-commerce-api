@@ -6,7 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ForgotEntity } from '../entities/forgot.entity';
 import { MailerService } from 'src/module/mailer';
-import { Verification } from '../entities/verifie.entity';
+import { Verification } from '../entities/verification.entity';
 
 @Injectable()
 export default class EmailEvent {

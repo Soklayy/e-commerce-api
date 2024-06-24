@@ -17,7 +17,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ForgotEntity } from './entities/forgot.entity';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { VerificationDto } from './dto/verifivation.dto';
-import { Verification } from './entities/verifie.entity';
+import { Verification } from './entities/verification.entity';
 
 @Injectable()
 export class AuthService {
