@@ -10,6 +10,9 @@ export const mailerConfig = (config: ConfigService) => ({
       user: config.get('EMAIL_USER'),
       pass: config.get('EMAIL_PASSWORD'),
     },
+    tls: {
+      rejectUnauthorized: false,
+    },
     
   },
 });
