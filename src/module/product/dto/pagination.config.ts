@@ -12,6 +12,7 @@ export const PRODUCT_PAGINATION_CONFIG: PaginateConfig<Product> = {
     'price',
     'images',
     'discount',
+    'quantity',
     'createdAt',
     'updatedAt',
     'category.id',
