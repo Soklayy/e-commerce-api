@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ForbiddenException,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -15,6 +16,8 @@ import { LoginDto } from './dto/login.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ForgotEntity } from './entities/forgot.entity';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { VerificationDto } from './dto/verifivation.dto';
+import { Verification } from './entities/verifie.entity';
 
 @Injectable()
 export class AuthService {
@@ -23,15 +26,17 @@ export class AuthService {
     private readonly userRepo: Repository<User>,
     @InjectRepository(ForgotEntity)
     private readonly forgotRepo: Repository<ForgotEntity>,
+    @InjectRepository(Verification)
+    private readonly verifieRepo: Repository<Verification>,
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly eventEmitter: EventEmitter2,
-  ) {}
+
+  ) { }
 
   async registerUser(dto: RegisterDto) {
     const user = await this.userRepo.save(this.userRepo.create(dto));
-    ('INSERT TO USERS ');
     const tokens = await this.getTokens(user.id);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
     this.eventEmitter.emit('user.registered', {
@@ -157,5 +162,44 @@ export class AuthService {
     await this.userRepo.update(userId, {
       refreshToken: hashedRefreshToken,
     });
+  }
+
+  async verifiEmail(dto: VerificationDto) {
+    try {
+      const user = await this.userRepo.findOneBy({ email: dto.email });
+      if (!user) {
+        throw new BadRequestException(`User with this email doesn't exist!`);
+      }
+
+      const verify = await this.verifieRepo.findOneBy({
+        code: dto.verificationCode,
+      });
+
+      if (!verify) {
+        throw new BadRequestException(`Verification Code Doesn't Exist`);
+      }
+
+      if (verify.done) {
+        throw new BadRequestException(`Verification Code already used!`);
+      }
+
+      const payload = this.jwtService.verify(verify.token, {
+        secret: this.configService.get('JWT_VERIFICATION_TOKEN_SECRET'),
+      });
+
+      if (payload.email !== user.email) {
+        throw new BadRequestException(`Mismatched Email!`);
+      }
+
+      this.userRepo.update(user.id, { verifiedEmail: true });
+      this.verifieRepo.update(verify.id, { done: true });
+
+      return { message: 'Email has been verified' };
+    } catch (error) {
+      if (error?.name === 'TokenExpiredError') {
+        throw new BadRequestException('Verification Code expired!');
+      }
+      throw new BadRequestException('Invalid Verification Code!');
+    }
   }
 }

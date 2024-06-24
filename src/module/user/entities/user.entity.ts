@@ -56,6 +56,10 @@ export class User extends AbstractEntity {
   })
   refreshToken?: string;
 
+
+  @Column({ name: 'verified_email', type: 'boolean', default: false })
+  verifiedEmail: boolean;
+
   @OneToOne(() => Address, (address) => address.user)
   address: Address;
 

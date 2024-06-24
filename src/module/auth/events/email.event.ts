@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ForgotEntity } from '../entities/forgot.entity';
 import { MailerService } from 'src/module/mailer';
+import { Verification } from '../entities/verifie.entity';
 
 @Injectable()
 export default class EmailEvent {
@@ -14,6 +15,8 @@ export default class EmailEvent {
     private readonly configService: ConfigService,
     @InjectRepository(ForgotEntity)
     private readonly forgotRepository: Repository<ForgotEntity>,
+    @InjectRepository(Verification)
+    private readonly verifieRepo: Repository<Verification>,
     private mailerSevice: MailerService,
   ) {}
 
@@ -26,16 +29,21 @@ export default class EmailEvent {
       ),
     });
 
-    // const verifiCode = new Date().getTime().toString(36);
-    const url = `${this.configService.get(
-      'EMAIL_CONFIRMATION_URL',
-    )}?token=${token}`;
+    const verifiCode = new Date().getTime().toString(36);
+
+    this.verifieRepo.save(
+      this.verifieRepo.create({
+        email: payload.email,
+        token: token,
+        code: verifiCode,
+      }),
+    );
 
     this.mailerSevice.sendEmail({
       from: `${this.configService.get('EMAIL_USER')}`,
       to: payload?.email,
       subject: `Hello ${payload?.fullName}`,
-      text: `Click this url to verifie email: <h1>${url}</h1>`,
+      text: `Code for verifie your email: <h1>${verifiCode}</h1>`,
     });
   }
 

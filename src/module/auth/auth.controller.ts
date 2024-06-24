@@ -25,6 +25,7 @@ import { RefreshTokenGuard } from 'src/commons/guard/refresh.guard';
 import { ForgotDto } from './dto/forgot.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { Request, Response } from 'express';
+import { VerificationDto } from './dto/verifivation.dto';
 
 @Controller('auth')
 @ApiTags('Authentication')
@@ -113,5 +114,13 @@ export class AuthController {
   @ApiOperation({ summary: 'User reset password' })
   async resetPassword(@Body() dto: ResetPasswordDto) {
     return this.authService.resetPassword(dto);
+  }
+
+  @Public()
+  @Post('/verify-email')
+  @HttpCode(200)
+  @ApiOperation({ summary: 'User verify email' })
+  async verifyEmail(@Body() dto: VerificationDto) {
+    return this.authService.verifiEmail(dto);
   }
 }
