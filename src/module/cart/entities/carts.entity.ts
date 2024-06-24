@@ -15,8 +15,12 @@ export class Carts extends AbstractEntity {
   @OneToMany(() => CartItems, (item) => item.cart)
   cartItem: CartItems[];
 
+  itemCount: number
+
   @AfterLoad()
-  after(){
-    
+  after() {
+    if (this.cartItem) {
+      this.itemCount = this.cartItem.length
+    }
   }
 }
