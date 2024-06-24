@@ -67,6 +67,7 @@ export class ProductService {
       relations:{
         category:true,
         brand:true,
+        option:true
       }
     });
 
