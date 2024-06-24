@@ -1,6 +1,6 @@
 import { AbstractEntity } from 'src/commons/entities/abstract.entity';
 import { User } from 'src/module/user/entities/user.entity';
-import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
+import { AfterLoad, Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 import { CartItems } from './cart-items.entity';
 
 @Entity('cartss')
@@ -14,4 +14,9 @@ export class Carts extends AbstractEntity {
 
   @OneToMany(() => CartItems, (item) => item.cart)
   cartItem: CartItems[];
+
+  @AfterLoad()
+  after(){
+    
+  }
 }

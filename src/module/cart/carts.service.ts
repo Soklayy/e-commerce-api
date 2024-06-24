@@ -88,12 +88,20 @@ export class CartsService {
             id: true,
             price: true,
             discount: true,
+            name:true,
+            images: true,
+            brand:{
+              name:true
+            }
           }
         },
       },
       relations: {
         cartItem: {
           productOption: true,
+          product: {
+            brand:true
+          }
         },
       },
     });

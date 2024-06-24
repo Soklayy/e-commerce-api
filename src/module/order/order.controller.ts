@@ -27,7 +27,7 @@ export class OrderController {
   }
 
   @Public()
-  @Get('/transaction')
+  @Get('/check')
   order(@Req() req: Request) {
     return this.orderService.findOne(req.user?.id)
   }

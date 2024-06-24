@@ -60,7 +60,7 @@ async function bootstrap() {
   const bot = app.get(getBotToken());
   app.use(bot.webhookCallback('/hook'));
 
-  const port = process.env.PORT || Number(configService.get('PORT')) || 3000;
+  const port = process.env.PORT || Number(configService.get('PORT')) || 3001;
 
   //for class-validation
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
